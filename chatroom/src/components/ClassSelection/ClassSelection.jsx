@@ -9,11 +9,15 @@ function ClassSelection( {onSubmit} ){
     
 
     const handleAddClass = () =>{
+        console.log("Add")
         setClasses([...classes, ""]);
     };
 
     const handleRemoveClass = () => {
-        setClasses(classes.slice(0, -1));
+        console.log("Remove")
+        if (classes.length > 1) {
+            setClasses(classes.slice(0, -1))
+        }
     };
 
     const handleClassChange = (index, value) => {
@@ -26,45 +30,50 @@ function ClassSelection( {onSubmit} ){
         e.preventDefault()
         const filteredClasses = classes.filter(c => c.trim() !== '')
         console.log(filteredClasses)
-        if(filteredClasses){
-            navigate("/chat", { state: {classes: filteredClasses}})
-        }
+        onSubmit(filteredClasses)
+        navigate("/chat")//, { state: {classes: filteredClasses}})
+        
     };
 
     return(
-        <>
-            <h1 style={{textAlign:'center', marginBottom:'20px'}}>Please enter your class names into the boxes!</h1>                
-                <Form onSubmit={handleSubmit} className="space-y-4">
+        <div className="p-4 flex flex-col items-center">
+            <h1 className="text-2xl font-bold mb-6">Please enter your class names into the boxes!</h1>                
+                <Form onSubmit={handleSubmit} className="max-w-md space-y-4">
                     {classes.map((className, index) => (
-                        <div className='w-full' key={index}>
+                        <div key={index}>
                             <Form.Control
                                 id={`Class${index}`}
                                 value={className}
                                 onChange={(e) => handleClassChange(index, e.target.value)}
-                                className='large-input'
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
                                 placeholder={`Class ${index+1}`}
                             />
                         </div>
                     ))}
-                    <Button 
-                        variant="outline" 
-                        onClick={handleAddClass} 
-                        style={{ marginTop: '20px' }}
-                        disabled={classes.length == 4}
-                    >
-                        Add Class
-                    </Button>
-                    <Button
-                        variant="danger"
-                        onClick={() => handleRemoveClass}
-                        style={{ marginTop: '20px'}}
-                        disabled={classes.length === 1} 
-                    >
-                        Remove Class
-                    </Button>
-                    <Button type="submit">Submit Classes</Button>
+                    <div className="flex gap-3">
+                        <Button 
+                            variant="outline" 
+                            onClick={handleAddClass} 
+                            className="px-4 py-2 text-black rounded-lg hover:bg-gray-100"
+                            disabled={classes.length == 4}
+                        >
+                            Add Class
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={handleRemoveClass}
+                            className="px-4 py-2 text-black rounded-lg hover:bg-gray-100"
+                            disabled={classes.length === 1} 
+                        >
+                            Remove Class
+                        </Button>
+                        <Button 
+                            type="submit" 
+                            className="px-4 py-2 text-white bg-black rounded-lg hover:bg-gray-800"
+                        >Submit Classes</Button>
+                    </div>
                 </Form>
-        </>
+        </div>
     )
 }
 
