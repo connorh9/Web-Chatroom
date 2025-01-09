@@ -16,23 +16,23 @@ export default function ChatroomScreen( {classes} ) {
   // const location = useLocation();
   // const classes = location.state?.classes || [];
 
-  useEffect(() => {
-    async function fetchChatrooms(){
-      try{
-        const response = await fetch('http://127.0.0.1:5000/chatrooms', {
-          method: 'GET',
-        });
-        if(!response.ok){
-          throw new Error('Failed to fetch chatrooms');
-        }
-        const data = await response.json();
-        setChatrooms(data.chatrooms);
-      } catch (error) {
-        console.error('Error fetching chatrooms:', error);
-      }
-    }
-    fetchChatrooms();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchChatrooms(){
+  //     try{
+  //       const response = await fetch('http://127.0.0.1:5000/chatrooms', {
+  //         method: 'GET',
+  //       });
+  //       if(!response.ok){
+  //         throw new Error('Failed to fetch chatrooms');
+  //       }
+  //       const data = await response.json();
+  //       setChatrooms(data.chatrooms);
+  //     } catch (error) {
+  //       console.error('Error fetching chatrooms:', error);
+  //     }
+  //   }
+  //   fetchChatrooms();
+  // }, []);
 
   
 
@@ -76,10 +76,9 @@ export function ChatRoom() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Chat Room: {decodeURIComponent(className)}</h2>
         <button
-          onClick={() => navigate('/chat')}
+          onClick={() => navigate('/select')}
           className="px-4 py-2 text-black rounded-lg hover:bg-gray-200"
         >
-        {/*Logic for getting chatrooms and messages here*/}
           Back to Class List
         </button>
       </div>

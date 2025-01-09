@@ -23,7 +23,10 @@ export default function WebAppRouter(){
             }
             const data = await response.json();
             console.log("created chatrooms", data.created_chatrooms);
-            setClasses(data.created_chatrooms || newClasses)
+            setClasses(newClasses)
+            console.log(newClasses)
+            console.log(classes)
+            return data;
         } catch (error) {
             console.error('Error creating chatrooms:', error);
         }

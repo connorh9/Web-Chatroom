@@ -1,5 +1,5 @@
 from app import create_app
-from app.routes import socketio  # Import socketio from routes
+from app import socketio  # Import socketio from routes
 
 app = create_app()
 

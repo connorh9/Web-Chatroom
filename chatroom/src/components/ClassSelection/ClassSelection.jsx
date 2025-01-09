@@ -26,12 +26,17 @@ function ClassSelection( {onSubmit} ){
         setClasses(newClasses);
     };
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault()
         const filteredClasses = classes.filter(c => c.trim() !== '')
         console.log(filteredClasses)
-        onSubmit(filteredClasses)
-        navigate("/chat")//, { state: {classes: filteredClasses}})
+        try {
+            await onSubmit(filteredClasses)
+            navigate("/chat")//, { state: {classes: filteredClasses}})
+        } catch (error) {
+            console.error('Error submitting classes:', error);
+        }
+        
         
     };
 

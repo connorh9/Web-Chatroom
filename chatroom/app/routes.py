@@ -1,15 +1,17 @@
 from flask import request, jsonify
-from app import app, db, socketio
+from app import db, socketio
 from app.models import Chatroom, Message
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_socketio import SocketIO, emit, join_room, leave_room
-
-socketio = SocketIO(app, cors_allowed_origins="*")
+from flask import current_app as app
 
 @socketio.on('join')
 def on_join(data):
-    room = data['room']
+    room = data.get('room')
+    if not Chatroom.query.filter_by(id=room).first():
+        return emit('error', {'error': 'Chatroom not found'})
     join_room(room)
+    emit('joined_room', {'room': room})
 
 @socketio.on('leave')
 def on_leave(data):
@@ -43,7 +45,7 @@ def create_message():
         content=data['content'],
         chatroom_id=data['chatroom_id'],
         user_id=data['user_id'],
-        timestamp=datetime.now(datetime.UTC)
+        timestamp=datetime.now(timezone.utc)
     )
     db.session.add(message)
     db.session.commit()
@@ -53,31 +55,30 @@ def create_message():
 
 @app.route('/chatrooms', methods=['POST'])
 def create_chatrooms():
-    data = request.get_json()
+    data = request.json
     names = data.get('names', [])
-    created_rooms = []
-    skipped_rooms = []
-
+    created_chatrooms = []
+    
     for name in names:
-        # Check if chatroom already exists
-        existing_room = Chatroom.query.filter_by(name=name).first()
-        if existing_room:
-            skipped_rooms.append(name)
-        else:
-            room = Chatroom(name=name)
-            db.session.add(room)
-            created_rooms.append(name)
-
+        # Case insensitive search
+        chatroom = Chatroom.get_by_name(name)
+        if not chatroom:
+            # Store with original casing
+            chatroom = Chatroom(name=name)
+            db.session.add(chatroom)
+            created_chatrooms.append(name)
+    
     db.session.commit()
     
     return jsonify({
-        'created_chatrooms': created_rooms,
-        'skipped_chatrooms': skipped_rooms
-    }), 201 if created_rooms else 200
+        'message': 'Chatrooms processed successfully',
+        'created_chatrooms': created_chatrooms,
+        'all_chatrooms': names
+    }), 201
 
 @app.route('/chatrooms/name/<string:name>', methods=['GET'])
 def get_chatroom_id(name):
-    chatroom = Chatroom.query.filter_by(name=name).first()
+    chatroom = Chatroom.get_by_name(name)
     if chatroom:
         return jsonify({'id': chatroom.id, 'name': chatroom.name}), 200
     return jsonify({'error': 'Chatroom not found'}), 404
