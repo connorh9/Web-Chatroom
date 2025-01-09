@@ -26,8 +26,15 @@ def get_chatrooms():
 
 @app.route('/chatrooms/<int:chatroom_id>/messages', methods=['GET'])
 def get_messages(chatroom_id):
-    messages=Message.query.filter_by(chatroom_id=chatroom_id).all()
-    return jsonify({'messages':[{'id':m.id, 'content': m.content} for m in messages]})
+    messages = Message.query.filter_by(chatroom_id=chatroom_id).all()
+    return jsonify({
+        'messages': [{
+            'id': message.id,
+            'content': message.content,
+            'user_id': message.user_id,
+            'timestamp': message.timestamp
+        } for message in messages]
+    })
 
 @app.route('/messages', methods=['POST'])
 def create_message():
@@ -49,8 +56,10 @@ def create_message():
     )
     db.session.add(message)
     db.session.commit()
-    socketio.emit('new_message', message.to_dict(), room=str(data['chatroom_id']))
-    
+
+    # Emit socket event after message is created
+    socketio.emit('new_message', message.to_dict(), room=str(message.chatroom_id))
+
     return jsonify(message.to_dict()), 201
 
 @app.route('/chatrooms', methods=['POST'])

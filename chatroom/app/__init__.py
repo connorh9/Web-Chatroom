@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 
 db = SQLAlchemy()
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*")
 
 def create_app():
     app = Flask(__name__)
@@ -14,7 +14,7 @@ def create_app():
     
     CORS(app)
     db.init_app(app)
-    socketio.init_app(app, cors_allowed_origins="*")
+    socketio.init_app(app)
 
     with app.app_context():
         from app import routes, models

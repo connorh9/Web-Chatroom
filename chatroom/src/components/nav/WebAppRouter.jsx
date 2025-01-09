@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ClassSelection from "../ClassSelection/ClassSelection.jsx";
 import WelcomeScreen from "./pages/WelcomeScreen.jsx";
 import ChatroomScreen, {ChatRoom , ChatPlaceholder} from "./pages/ChatroomScreen.jsx";
+import Chatroom from './pages/Chatroom';
 
 
 export default function WebAppRouter(){
@@ -45,8 +46,8 @@ export default function WebAppRouter(){
                     : <Navigate to="/select" replace />
                 }
                 >
-                <Route index element={<ChatPlaceholder />} />
-                <Route path=":className" element={<ChatRoom />} />
+                <Route index element={<div className="text-center text-gray-500">Select a class to start chatting</div>} />
+                <Route path=":className" element={<Chatroom />} />
             </Route>
         </Routes>
     </BrowserRouter>

@@ -16,7 +16,7 @@ class Message(db.Model):
     content = db.Column(db.String(500), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     chatroom_id = db.Column(db.Integer, db.ForeignKey('chatroom.id'), nullable=False)
-    user_id = db.Column(db.String(36), nullable=False)
+    user_id = db.Column(db.String(50), nullable=False)
 
     def to_dict(self):
         return {
