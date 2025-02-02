@@ -1,7 +1,6 @@
 # React Based Web Chatroom
-*In progress*
 This project allows students to input their course load and be automatically placed in a class.
-The backend API was made with Python and Flask while the frontend is done with Javascript and React.
+The backend API was made with Python, Flask and SQLAlchemy, while the frontend is done with Javascript and React.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
