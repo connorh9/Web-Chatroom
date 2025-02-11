@@ -1,4 +1,4 @@
-https://github.com/connorh9/Web-Chatroom/blob/main/README.md# React Based Web Chatroom
+# React Based Web Chatroom
 This project allows students to input their course load and be automatically placed in a class.
 The backend API was made with Python, Flask and SQLAlchemy, while the frontend is done with Javascript and React.
 
