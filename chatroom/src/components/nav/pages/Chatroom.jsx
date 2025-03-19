@@ -4,8 +4,11 @@ import { Form, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import io from 'socket.io-client';
 import bascomHall from '../../../images/bascom-hall.png';
+import { useTheme } from '../../ThemeContext';
 
 export default function Chatroom() {
+    const { darkMode, toggleDarkMode } = useTheme();
+
     const { className } = useParams();
     const navigate = useNavigate();
     const [messages, setMessages] = useState([]);
@@ -170,10 +173,10 @@ export default function Chatroom() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Chat Room: {decodeURIComponent(className)}</h2>
+        <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-black'}`}>Chat Room: {decodeURIComponent(className)}</h2>
         <button
           onClick={() => navigate('/select')}
-          className="text-gray-600 hover:text-gray-800"
+          className={`${darkMode ? 'text-white' : 'text-gray-600 hover:text-gray-800'}`}
         >
           Back to Class List
         </button>

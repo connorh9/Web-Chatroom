@@ -1,11 +1,14 @@
 import './App.css';
 import WebAppRouter from "./components/nav/WebAppRouter.jsx"
 import * as React from 'react';
+import { ThemeProvider } from './components/ThemeContext';
 
 function App() {
   return (
     <>
-      <WebAppRouter/>
+      <ThemeProvider>
+        <WebAppRouter/>
+      </ThemeProvider>
     </>
   );
 }
