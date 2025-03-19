@@ -1,13 +1,13 @@
 # React Based Web Chatroom
-*In progress*
 This project allows students to input their course load and be automatically placed in a class.
-The backend API was made with Python and Flask while the frontend is done with Javascript and React.
+The backend API was made with Python, Flask and SQLAlchemy, while the frontend is done with Javascript and React.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
 
-## Available Scripts
+To run this on your local machine:  
+1. Run the run.py file with ```python run.py```, this will start the API and create a database file on your local machine  
+2. Type npm start into the console, this will run the scripts in the package file  
 
-In the project directory, you can run:
 
 ### `npm start`
 
@@ -17,19 +17,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 
