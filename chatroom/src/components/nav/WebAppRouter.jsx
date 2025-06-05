@@ -5,6 +5,7 @@ import WelcomeScreen from "./pages/WelcomeScreen.jsx";
 import ChatroomScreen, {ChatRoom , ChatPlaceholder} from "./pages/ChatroomScreen.jsx";
 import Chatroom from './pages/Chatroom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://chatroom-518233057279.us-central1.run.app';
 
 export default function WebAppRouter(){
     const [classes, setClasses] = useState([])
@@ -12,7 +13,7 @@ export default function WebAppRouter(){
     const handleClassSubmit = async (newClasses) => {
     //POST classrooms to database here
         try{
-            const response = await fetch('http://127.0.0.1:5000/chatrooms', {
+            const response = await fetch(`${API_URL}/chatrooms`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
