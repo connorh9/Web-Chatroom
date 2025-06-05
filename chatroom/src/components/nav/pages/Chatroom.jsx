@@ -6,6 +6,8 @@ import io from 'socket.io-client';
 import bascomHall from '../../../images/bascom-hall.png';
 import { useTheme } from '../../ThemeContext';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://chatroom-518233057279.us-central1.run.app';
+
 export default function Chatroom() {
     const { darkMode, toggleDarkMode } = useTheme();
 
@@ -21,7 +23,7 @@ export default function Chatroom() {
     // Socket connection setup
     useEffect(() => {
         console.log("Setting up socket connection");
-        const newSocket = io('http://127.0.0.1:5000', {
+        const newSocket = io(API_URL, {
             transports: ['websocket', 'polling'],
             withCredentials: true,
             autoConnect: true,
@@ -87,14 +89,13 @@ export default function Chatroom() {
     const fetchMessages = async (chatroomId) => {
         console.log('Fetch messages', chatroomId);
         try{
-            const response = await fetch(`http://127.0.0.1:5000/chatrooms/${chatroomId}/messages`, {
+            const response = await fetch(`${API_URL}/chatrooms/${chatroomId}/messages`, {
                 method: 'GET',
             });
             if(!response.ok){
                 throw new Error('Failed to fetch messages');
             }
             const data = await response.json();
-           // console.log('Received messages:', data);  // See what we're getting
             setMessages(data.messages);
         } catch (error) {
             console.error('Error fetching messages:', error);
@@ -103,7 +104,7 @@ export default function Chatroom() {
 
     useEffect(() => {
         const getChatroomId = async (chatroomName) => {
-            const response = await fetch(`http://127.0.0.1:5000/chatrooms/name/${chatroomName}`, {
+            const response = await fetch(`${API_URL}/chatrooms/name/${chatroomName}`, {
                 method: 'GET',
             });
 
@@ -115,8 +116,6 @@ export default function Chatroom() {
             setChatroomId(data.id);
             console.log('Chatroom ID', data.id);
         }
-
-        
 
         if(className){
             getChatroomId(className)
@@ -131,7 +130,7 @@ export default function Chatroom() {
     }, [className, chatroomId]);
 
     const sendMessage = async (content) => {
-        const response = await fetch('http://127.0.0.1:5000/messages', {
+        const response = await fetch(`${API_URL}/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
