@@ -33,6 +33,7 @@ function ClassSelection({ onSubmit }) {
             navigate("/chat")
         } catch (error) {
             console.error('Error submitting classes:', error);
+            alert('Failed to create chatrooms. Please try again.');
         }
     };
 

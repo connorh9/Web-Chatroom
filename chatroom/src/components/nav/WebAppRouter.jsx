@@ -11,34 +11,35 @@ export default function WebAppRouter(){
     const [classes, setClasses] = useState([])
 
     const handleClassSubmit = async (newClasses) => {
-    //POST classrooms to database here
-        try{
+        try {
+            console.log('Submitting to:', `${API_URL}/chatrooms`); // Debug log
             const response = await fetch(`${API_URL}/chatrooms`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( {names: newClasses}),
+                body: JSON.stringify({ names: newClasses }),
             });
-            if(!response.ok){
-                throw new Error('Failed to create chatrooms');
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`Failed to create chatrooms: ${response.status} ${errorData.message || response.statusText}`);
             }
+            
             const data = await response.json();
-            console.log("created chatrooms", data.created_chatrooms);
-            setClasses(newClasses)
-            console.log(newClasses)
-            console.log(classes)
+            console.log("Created chatrooms:", data.created_chatrooms);
+            setClasses(newClasses);
             return data;
         } catch (error) {
             console.error('Error creating chatrooms:', error);
+            throw error; // Re-throw to handle in ClassSelection
         }
-        
     }
     
     return <BrowserRouter>
         <Routes>
-            <Route path = "/" element={<WelcomeScreen />}/>
-            <Route path = "/select" element={<ClassSelection onSubmit={handleClassSubmit}/>}/>
+            <Route path="/" element={<WelcomeScreen />}/>
+            <Route path="/select" element={<ClassSelection onSubmit={handleClassSubmit}/>}/>
             <Route 
                 path="/chat" 
                 element={
@@ -46,7 +47,7 @@ export default function WebAppRouter(){
                     ? <ChatroomScreen classes={classes} /> 
                     : <Navigate to="/select" replace />
                 }
-                >
+            >
                 <Route index element={<div className="text-center text-gray-500">Select a class to start chatting</div>} />
                 <Route path=":className" element={<Chatroom />} />
             </Route>
