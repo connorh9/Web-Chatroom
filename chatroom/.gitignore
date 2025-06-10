@@ -27,6 +27,7 @@ requirements.txt
 
 # Environment variables
 .env
+env.yaml
 
 # Python
 __pycache__/

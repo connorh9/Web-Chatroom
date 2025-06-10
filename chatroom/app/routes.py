@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from app import db, socketio
-from app.models import Chatroom, Message
+from models import Chatroom, Message
 from datetime import datetime, timezone
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import current_app as app
@@ -21,6 +21,7 @@ def on_leave(data):
    
 @app.route('/chatrooms', methods=['GET'])
 def get_chatrooms():
+    print("Chatrooms GET hit")
     chatrooms = Chatroom.query.all()
     return jsonify( {'chatrooms':[{'id': c.id, 'name': c.name} for c in chatrooms]})
 
@@ -57,22 +58,23 @@ def create_message():
     db.session.add(message)
     db.session.commit()
 
-    # Emit socket event after message is created
+    #emit socket event after message is created
     socketio.emit('new_message', message.to_dict(), room=str(message.chatroom_id))
 
     return jsonify(message.to_dict()), 201
 
 @app.route('/chatrooms', methods=['POST'])
 def create_chatrooms():
+    print("Chatrooms POST hit")
     data = request.json
     names = data.get('names', [])
     created_chatrooms = []
     
     for name in names:
-        # Case insensitive search
+        #case insensitive search
         chatroom = Chatroom.get_by_name(name)
         if not chatroom:
-            # Store with original casing
+            #store with original casing
             chatroom = Chatroom(name=name)
             db.session.add(chatroom)
             created_chatrooms.append(name)
