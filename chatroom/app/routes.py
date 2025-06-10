@@ -4,6 +4,14 @@ from models import Chatroom, Message
 from datetime import datetime, timezone
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import current_app as app
+import re
+
+
+def normalize_chatroom_name(name):
+    if not name:
+        return ""
+    normalized = re.sub(r'\s+', ' ', name.strip())
+    return normalized
 
 @socketio.on('join')
 def on_join(data):
@@ -18,10 +26,8 @@ def on_leave(data):
     room = data['room']
     leave_room(room)
 
-   
 @app.route('/chatrooms', methods=['GET'])
 def get_chatrooms():
-    print("Chatrooms GET hit")
     chatrooms = Chatroom.query.all()
     return jsonify( {'chatrooms':[{'id': c.id, 'name': c.name} for c in chatrooms]})
 
@@ -40,11 +46,11 @@ def get_messages(chatroom_id):
 @app.route('/messages', methods=['POST'])
 def create_message():
     data = request.json
-    # data should contain: content, chatroom_id, and user_id
+    #data should contain: content, chatroom_id, and user_id
     if not all(key in data for key in ['content', 'chatroom_id', 'user_id']):
         return jsonify({'error': 'Missing required fields'}), 400
         
-    # Verify the chatroom exists
+    #verify the chatroom exists
     chatroom = Chatroom.query.get(data['chatroom_id'])
     if not chatroom:
         return jsonify({'error': 'Chatroom not found'}), 404
@@ -65,19 +71,22 @@ def create_message():
 
 @app.route('/chatrooms', methods=['POST'])
 def create_chatrooms():
-    print("Chatrooms POST hit")
     data = request.json
     names = data.get('names', [])
     created_chatrooms = []
     
     for name in names:
         #case insensitive search
-        chatroom = Chatroom.get_by_name(name)
+        normalized_name = normalize_chatroom_name(name)
+
+        if not normalized_name:
+            continue
+
+        chatroom = Chatroom.get_by_name(normalized_name.lower())
         if not chatroom:
-            #store with original casing
-            chatroom = Chatroom(name=name)
+            chatroom = Chatroom(name=normalized_name)
             db.session.add(chatroom)
-            created_chatrooms.append(name)
+            created_chatrooms.append(normalized_name)
     
     db.session.commit()
     
@@ -89,7 +98,8 @@ def create_chatrooms():
 
 @app.route('/chatrooms/name/<string:name>', methods=['GET'])
 def get_chatroom_id(name):
-    chatroom = Chatroom.get_by_name(name)
+    normalized_name = normalize_chatroom_name(name)
+    chatroom = Chatroom.get_by_name(normalized_name.lower())
     if chatroom:
         return jsonify({'id': chatroom.id, 'name': chatroom.name}), 200
     return jsonify({'error': 'Chatroom not found'}), 404

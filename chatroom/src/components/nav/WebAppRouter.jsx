@@ -32,7 +32,7 @@ export default function WebAppRouter(){
             return data;
         } catch (error) {
             console.error('Error creating chatrooms:', error);
-            throw error; // Re-throw to handle in ClassSelection
+            throw error; //Re-throw to handle in ClassSelection
         }
     }
     
